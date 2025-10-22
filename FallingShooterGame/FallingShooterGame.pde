@@ -9,9 +9,13 @@ float enemySpawnInterval = 120; // フレーム間隔
 float lastEnemySpawn = 0;
 float startTime = 0; // ★ゲーム開始時刻を記録するための変数
 
+//タイマー
+Timer timer;
+
 void setup() {
   size(600, 800);
   initGame();
+  timer = new Timer(this, 40 , true);
 }
 
 void initGame() {
@@ -41,11 +45,13 @@ void draw() {
   float elapsedSec = (millis() - startTime) / 1000.0;
 
   // ★右上に経過秒数を表示
-  fill(0);
-  textAlign(RIGHT, TOP);
-  textSize(20);
-  text(nf(elapsedSec, 1, 1) + " s", width - 10, 10); // 小数1桁まで表示
+  //fill(0);
+  //textAlign(RIGHT, TOP);
+  //textSize(20);
+  //text(nf(elapsedSec, 1, 1) + " s", width - 10, 10); // 小数1桁まで表示
 
+  timer.display();  // 時間を描画  
+  
   if (!gameOver) {
     player.update();
     player.display();
@@ -130,6 +136,7 @@ void mousePressed() {
     if (mouseX >= bx && mouseX <= bx + bw &&
         mouseY >= by && mouseY <= by + bh) {
       initGame();
+      timer.reset();
     }
   }
 }
