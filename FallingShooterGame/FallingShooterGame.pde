@@ -1,5 +1,6 @@
 // ===================== FallingShooterGame.pde =====================
 Player player;
+DebugGodMode debugGodMode;
 ArrayList<Enemy> enemies;
 ArrayList<Shrapnel> shrapnels;
 boolean gameOver = false;
@@ -25,6 +26,7 @@ void initGame() {
   gameOver = false;
   lastEnemySpawn = 0;
   startTime = millis(); // ★ゲーム開始時に記録
+  debugGodMode = new DebugGodMode(); // 無敵モード初期化
 
   // 初期敵をランダム生成
   for (int i = 0; i < 1; i++) {
@@ -75,7 +77,7 @@ void draw() {
     }
 
     // 当たり判定
-    if (!gameOver && dist(player.x, player.y, e.x, e.y) < (player.widthSize/2 + e.size/2)) {
+    if (!gameOver && dist(player.x, player.y, e.x, e.y) < (player.widthSize/2 + e.size/2) && !debugGodMode.isEnabled() ) {
       player.explodeEffect();
       gameOver = true;
     }
@@ -93,7 +95,7 @@ void draw() {
     }
 
     float sSize = s.baseSize * map(s.y, height, 0, 1, 2);
-    if (!gameOver && dist(player.x, player.y, s.x, s.y) < (player.widthSize/2 + sSize/2)) {
+    if (!gameOver && dist(player.x, player.y, s.x, s.y) < (player.widthSize/2 + sSize/2) && !debugGodMode.isEnabled()) {
       player.explodeEffect();
       gameOver = true;
     }
@@ -119,6 +121,8 @@ void draw() {
       }
     }
   }
+  
+  debugGodMode.display();
 
   // ゲームオーバー描画
   if (gameOver) {
@@ -138,5 +142,13 @@ void mousePressed() {
       initGame();
       timer.reset();
     }
+  }
+}
+
+// ----- キー入力処理（無敵モード切り替え） -----
+void keyPressed() {
+  // 'G'キーで無敵モード切り替え
+  if (key == 'g' || key == 'G') {
+    debugGodMode.toggle();
   }
 }
